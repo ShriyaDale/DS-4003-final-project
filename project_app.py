@@ -83,5 +83,4 @@ def update_menu_items(selected_restaurants, selected_calories):
 
 
 if __name__ == '__main__':
-    #run the app in debug mode
-    app.run_server(debug=True)
+    app.run_server(debug=False)
