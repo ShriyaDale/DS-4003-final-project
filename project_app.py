@@ -7,6 +7,7 @@ df = pd.read_csv('data.csv')
 
 #initialize the Dash app
 app = Dash(__name__, external_stylesheets=['https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css'])
+server = app.server
 
 #define the minimum and maximum values for the calories range slider
 min_value = df['calories'].min()
