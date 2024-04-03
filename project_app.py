@@ -82,5 +82,5 @@ def update_menu_items(selected_restaurants, selected_calories):
         return html.P("Please select at least one restaurant and one caloric range.")
 
 
-if __name__ == '__main__':
-    app.run_server(debug=False)
+if __name__ == "__main__":
+    app.run_server(debug=True)
