@@ -50,6 +50,7 @@ app.layout = html.Div(children=[
             ], className='card-text', style={'padding': '5px 0'})
         ], className='card border-primary mb-3', style={'text-align':'justify', 'padding': '20px'})
     ], className='container'),
+
     #dropdowns
     html.Div([
         html.Div([
@@ -120,15 +121,15 @@ app.layout = html.Div(children=[
                 ),
             ], className='box is-rounded'),
         ], className='column is-one-fifth'),
-    ], className='columns', style={'marginBottom': '20px'}),
+    ], className='columns', style={'marginBottom': '20px', 'margin': '20px'}),
     
     #visualizations
     html.Div([
     html.Div(id='menu-items-output', className='column is-two-thirds', style={'paddingRight': '20px'}),
     html.Div([
-        dcc.Graph(id='scatter-plot', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%'}),
+        dcc.Graph(id='scatter-plot', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%', 'marginBottom': '15px'}),
         dcc.Graph(id='pie-chart', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%'}),
-        html.P('The default values for these are the recommended values for a 2000 calorie diet. When selected, the pie chart shows the average nutrient composition of the selected items.'),
+        html.P('The default values for these are the recommended values for a 2000 calorie diet. When selected, the pie chart shows the average nutrient composition of the selected items from each restaurant.'),
     ], className='column', style={'display': 'flex', 'flexDirection': 'column', 'width': '100%', 'height': '100%', 'overflowX': 'auto','marginRight': '40px'})
 ], className='columns'),
 
@@ -139,7 +140,7 @@ app.layout = html.Div(children=[
             href='https://github.com/ShriyaDale/DS-4003_SD/tree/main', className='text-success'),'.'])
             ], className='row text-light bg-dark p-4', style={'text-align':'center', 'backgroundColor': '#8BB174'})
         ], className='container-fluid')
-    ], style={'margin': '20px', 'backgroundColor': '#0F0F0F0'}
+    ], style={'backgroundColor': '#C1E1C1'}
 )
 #callbacks for menu tables
 @app.callback(
@@ -206,7 +207,7 @@ def update_scatter_plot(restaurants, search_input, protein_range, carbs_range, f
     filtered_df = filtered_df[(filtered_df['carbohydrates'] >= carbs_range[0]) & (filtered_df['carbohydrates'] <= carbs_range[1])]
     filtered_df = filtered_df[(filtered_df['total_fat'] >= fats_range[0]) & (filtered_df['total_fat'] <= fats_range[1])]
     filtered_df = filtered_df[(filtered_df['calories'] >= caloric_range[0]) & (filtered_df['calories'] <= caloric_range[1])]
-    fig = px.scatter(filtered_df, x='protein', y='carbohydrates', color='calories', title = 'Protein vs. Carbs')
+    fig = px.scatter(filtered_df, x='protein', y='carbohydrates', color='calories', title = 'Protein vs. Carbohydrates')
     fig.update_layout(
         xaxis_title='Protein (g)',
         yaxis_title='Carbs (g)',
@@ -242,7 +243,7 @@ def update_pie_chart(restaurants, search_input, protein_range, carbs_range, fats
         'Nutrient': ['Protein', 'Carbohydrates', 'Total Fat', 'Standard Protein', 'Standard Carbs', 'Standard Fat'],
         'Value': [avg_protein, avg_carbs, avg_fat, standard_protein, standard_carbs, standard_fat]
     }
-    fig = px.pie(nutrient_data, values='Value', names='Nutrient', title='Average Nutrient Composition of Selected Restaurant(s)', hole=0.3)
+    fig = px.pie(nutrient_data, values='Value', names='Nutrient', title='Nutritional Composition for Selected Restaurants', hole=0.3)
     fig.update_traces(textposition='outside', textinfo='percent+label')
     fig.update_layout(
         hovermode='closest'
