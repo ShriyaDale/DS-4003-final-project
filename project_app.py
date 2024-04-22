@@ -119,17 +119,17 @@ app.layout = html.Div(children=[
                     value=[min_calories, max_calories],
                 ),
             ], className='box is-rounded'),
-        ], className='column is-one-quarter'),
+        ], className='column is-one-fifth'),
     ], className='columns', style={'marginBottom': '20px'}),
     
     #visualizations
     html.Div([
     html.Div(id='menu-items-output', className='column is-two-thirds', style={'paddingRight': '20px'}),
     html.Div([
-        dcc.Graph(id='scatter-plot', className='column', style={'width': '100%', 'height': '100%'}),
-        dcc.Graph(id='pie-chart', className='column', style={'width': '100%', 'height': '100%'}),
+        dcc.Graph(id='scatter-plot', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%'}),
+        dcc.Graph(id='pie-chart', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%'}),
         html.P('The default values for these are the recommended values for a 2000 calorie diet. When selected, the pie chart shows the average nutrient composition of the selected items.'),
-    ], className='column', style={'display': 'flex', 'flexDirection': 'column', 'width': '100%', 'height': '100%'})
+    ], className='column', style={'display': 'flex', 'flexDirection': 'column', 'width': '100%', 'height': '100%', 'overflowX': 'auto'})
 ], className='columns'),
 
     html.Div([
@@ -245,7 +245,6 @@ def update_pie_chart(restaurants, search_input, protein_range, carbs_range, fats
     fig = px.pie(nutrient_data, values='Value', names='Nutrient', title='Average Nutrient Composition of Selected Restaurant(s)', hole=0.3)
     fig.update_traces(textposition='outside', textinfo='percent+label')
     fig.update_layout(
-        margin=dict(l=20, r=20, t=30, b=20),
         hovermode='closest'
     )
     return fig
