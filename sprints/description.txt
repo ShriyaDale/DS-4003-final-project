@@ -1,6 +1,0 @@
-This folder contains the contents of the four sprints for this final project. 
-
-Sprint 1: User Personas - Identified target users and their specific needs and preferences for the nutrition dashboard through user persona development.
-Sprint 2: Data Cleaning - Conducted data preprocessing and cleaning tasks to ensure the dataset from MenuStat is accurate and ready for analysis.
-Sprint 3: Layout - Designed the layout structure and visual components of the dashboard, focusing on user interface and experience considerations.
-Sprint 4: Dashboard V0 - Implemented the initial version of the dashboard, integrating data visualization and filtering functionalities based on user requirements.
