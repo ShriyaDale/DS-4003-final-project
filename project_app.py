@@ -20,9 +20,9 @@ max_fats = df['total_fat'].max()
 min_calories = df['calories'].min()
 max_calories = df['calories'].max()
 #standard values for the pie chart (shown below)
-ideal_protein_intake = 50
-ideal_carbs_intake = 300
-ideal_fats_intake = 65
+standard_protein = 50
+standard_carbs = 300
+standard_fat = 65
 
 #layout with components
 app.layout = html.Div(children=[
@@ -121,9 +121,9 @@ app.layout = html.Div(children=[
     #dashboard footer with link to github + project background
     html.Div([
         html.Footer([ 
-        html.P('This dashboard was created by Shriya Dale for DS 4003.'),
         html.P([html.Strong('Dataset Provenance')]),
         html.P("The dataset is sourced from MenuStat and serves as a valuable resource for researchers, policymakers, and health professionals interested in restaurant food nutrition. Developed by the New York City Department of Health and Mental Hygiene and now managed by Harvard Pilgrim Health Care Institute, MenuStat aims to provide comprehensive insights into restaurant food nutrition. This dataset holds significant relevance due to the pivotal role that out-of-home dining plays in shaping the American diet. Studies have shown that meals consumed away from home contribute substantially to daily caloric intake, constituting approximately one-third of total calories consumed, and represent nearly half of an average household's food expenditure. My interest lies in delving deep into the diverse spectrum of nutrients present in these restaurant offerings and exploring how they contribute to overall dietary patterns."),
+        html.P('This dashboard was created by Shriya Dale for DS 4003.'),
         html.P(['See the GitHub repository with all work for this project ',html.A('here', 
             href='https://github.com/ShriyaDale/DS-4003_SD/tree/main', className='text-success'),'.'])
             ], className='row text-light bg-dark p-4', style={'text-align':'center', 'backgroundColor': '#8BB174'})
@@ -202,11 +202,7 @@ def update_scatter_plot(restaurants, search_input, protein_range, carbs_range, f
     )
     return fig
 
-# Standard values for comparison
-standard_protein = 50
-standard_carbs = 300
-standard_fat = 65
-
+#callback to update the pie chart
 @app.callback(
     Output('pie-chart', 'figure'),
     [Input('multiple-restaurant-dropdown', 'value'),
