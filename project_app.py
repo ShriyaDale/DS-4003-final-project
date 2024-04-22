@@ -40,7 +40,7 @@ app.layout = html.Div(children=[
     #dropdowns
     html.Div([
         html.Div([
-            html.Div([ #restaurant dropdown (multi-select)
+            html.Div([
                 html.Label('Select Restaurants', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
                 dcc.Dropdown(
                     id='multiple-restaurant-dropdown',
@@ -49,7 +49,7 @@ app.layout = html.Div(children=[
                     value=[],
                 ),
             ], className='box is-rounded'),
-            html.Div([ #search box - takes in USER input
+            html.Div([
                 html.Label('Search', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
                 dcc.Input(
                     id='search-input',
@@ -60,7 +60,7 @@ app.layout = html.Div(children=[
             ], className='box is-rounded'),
         ], className='column is-one-fifth'),
         html.Div([
-            html.Div([ #protein slider
+            html.Div([
                 html.Label('Select Protein Range (g)', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
                 dcc.RangeSlider(
                     id='protein-range-slider',
@@ -72,7 +72,7 @@ app.layout = html.Div(children=[
             ], className='box is-rounded'),
         ], className='column is-one-fifth'),
         html.Div([
-            html.Div([ #carbs slider
+            html.Div([
                 html.Label('Select Carbs Range (g)', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
                 dcc.RangeSlider(
                     id='carbs-range-slider',
@@ -84,7 +84,7 @@ app.layout = html.Div(children=[
             ], className='box is-rounded'),
         ], className='column is-one-fifth'),
         html.Div([
-            html.Div([ #fats range slider
+            html.Div([
                 html.Label('Select Fats Range (g)', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
                 dcc.RangeSlider(
                     id='fats-range-slider',
@@ -96,7 +96,7 @@ app.layout = html.Div(children=[
             ], className='box is-rounded'),
         ], className='column is-one-fifth'),
         html.Div([
-            html.Div([ #caloric range slider
+            html.Div([
                 html.Label('Select Caloric Range', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
                 dcc.RangeSlider(
                     id='caloric-range-slider',
@@ -106,7 +106,7 @@ app.layout = html.Div(children=[
                     value=[min_calories, max_calories],
                 ),
             ], className='box is-rounded'),
-        ], className='column is-one-fifth'), #used to make sure the columns are split evenly regardless of device
+        ], className='column is-one-fifth'),
     ], className='columns', style={'marginBottom': '20px', 'margin': '20px'}),
     
     #visualizations
@@ -130,7 +130,7 @@ app.layout = html.Div(children=[
         ], className='container-fluid')
     ], style={'backgroundColor': '#C1E1C1'}
 )
-#callback for menu tables
+#callbacks for menu tables
 @app.callback(
     Output('menu-items-output', 'children'),
     [Input('multiple-restaurant-dropdown', 'value'),
@@ -177,7 +177,6 @@ def update_menu_items(selected_restaurants, selected_protein, selected_carbs, se
             return restaurant_outputs
     else:
         return [html.Div(html.P("Please select at least one restaurant and one nutrient/caloric range.", className='has-text-centered'), className='column is-full')]
-
 #callback to update the scatter plot
 @app.callback(
     Output('scatter-plot', 'figure'),
@@ -202,8 +201,12 @@ def update_scatter_plot(restaurants, search_input, protein_range, carbs_range, f
         yaxis_title='Carbs (g)',
     )
     return fig
-    
-#callback to update the pie chart
+
+# Standard values for comparison
+standard_protein = 50
+standard_carbs = 300
+standard_fat = 65
+
 @app.callback(
     Output('pie-chart', 'figure'),
     [Input('multiple-restaurant-dropdown', 'value'),
