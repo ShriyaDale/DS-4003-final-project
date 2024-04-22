@@ -129,7 +129,7 @@ app.layout = html.Div(children=[
         dcc.Graph(id='scatter-plot', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%'}),
         dcc.Graph(id='pie-chart', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%'}),
         html.P('The default values for these are the recommended values for a 2000 calorie diet. When selected, the pie chart shows the average nutrient composition of the selected items.'),
-    ], className='column', style={'display': 'flex', 'flexDirection': 'column', 'width': '100%', 'height': '100%', 'overflowX': 'auto'})
+    ], className='column', style={'display': 'flex', 'flexDirection': 'column', 'width': '100%', 'height': '100%', 'overflowX': 'auto','marginRight': '40px'})
 ], className='columns'),
 
     html.Div([
