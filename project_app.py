@@ -27,9 +27,29 @@ app.layout = html.Div(children=[
     # Dropdowns for restaurant selection and nutrient ranges
     # Header
     html.Div([
-        html.H1('Nutrition Dashboard', className='title is-1 has-text-centered', style={'color': 'white', 'backgroundColor': '#8BB174', 'padding': '20px'}),
-        html.P('Choose a food item from the dropdown menu to see its nutritional information.', className='subtitle is-5 has-text-centered', style={'color': '#426B69'}),
+        html.H1('Foods from American Restaurants Classified through Nutritonal Value', className='title is-1 has-text-centered', style={'color': 'white', 'backgroundColor': '#8BB174', 'padding': '20px'}),
     ], style={'marginBottom': '20px'}),
+    html.Div([
+        html.Div([
+            html.H3([html.Strong('Instructions')], className='card-title'),
+            html.P('Welcome to the Nutrition Dashboard! Use the selector widgets below to customize your analysis.'),
+            html.P([
+                html.Strong('1. '), 'Choose one or more restaurants from the dropdown menu to filter the data.'
+            ], className='card-text', style={'padding': '5px 0'}),
+            html.P([
+                html.Strong('2. '), 'Use the search bar to find specific food items within the selected restaurants.'
+            ], className='card-text', style={'padding': '5px 0'}),
+            html.P([
+                html.Strong('3. '), 'Adjust the sliders to select the desired range of protein, carbs, fats, and calories.'
+            ], className='card-text', style={'padding': '5px 0'}),
+            html.P([
+                html.Strong('4. '), 'Explore the nutritional information of the filtered items in the table on the left side.'
+            ], className='card-text', style={'padding': '5px 0'}),
+            html.P([
+                html.Strong('5. '), 'FINISH adding directions here.'
+            ], className='card-text', style={'padding': '5px 0'})
+        ], className='card border-primary mb-3', style={'text-align':'justify', 'padding': '20px'})
+    ], className='container'),
     html.Div([
         html.Div([
             html.Div([
@@ -47,7 +67,7 @@ app.layout = html.Div(children=[
                     id='search-input',
                     type='text',
                     placeholder='Search items...',
-                    debounce=True
+                    debounce=True,
                 ),
             ], className='box is-rounded'),
         ], className='column is-one-quarter'),
@@ -100,6 +120,7 @@ app.layout = html.Div(children=[
             ], className='box is-rounded'),
         ], className='column is-one-quarter'),
     ], className='columns', style={'marginBottom': '20px'}),
+    
     # Main content area
     html.Div([
         # Left side: Table of menu items
@@ -116,10 +137,16 @@ app.layout = html.Div(children=[
         ], className='column'),
     ], className='columns'),
 
-], style={'margin': '20px', 'backgroundColor': '#0F0F0F0'})
-
-
-# Callback to update the menu items based on user selection
+    html.Div([
+        html.Footer([ 
+        html.P('This dashboard was created by Shriya Dale for DS 4003.'),
+        html.P(['See the GitHub repository with all work for this project ',html.A('here', 
+            href='https://github.com/ShriyaDale/DS-4003_SD/tree/main', className='text-success'),'.'])
+            ], className='row text-light bg-dark p-4', style={'text-align':'center', 'backgroundColor': '#8BB174'})
+        ], className='container-fluid')
+    ], style={'margin': '20px', 'backgroundColor': '#0F0F0F0'}
+)
+#callbacks for menu tables
 @app.callback(
     Output('menu-items-output', 'children'),
     [Input('multiple-restaurant-dropdown', 'value'),
@@ -138,23 +165,17 @@ def update_menu_items(selected_restaurants, selected_protein, selected_carbs, se
                                  (df['total_fat'] >= selected_fats[0]) & (df['total_fat'] <= selected_fats[1]) &
                                  (df['calories'] >= selected_calories[0]) & (df['calories'] <= selected_calories[1])]
 
-        # Filter menu items based on search input
         if search_value:
             filtered_menu_items = filtered_menu_items[filtered_menu_items['item_name'].str.contains(search_value, case=False)]
 
         if filtered_menu_items.empty:
-            # Display a message if no menu items match the criteria
             return [html.Div(html.P("No menu items found for the selected criteria.", className='has-text-centered'), className='column is-full')]
         else:
-            # Sort the filtered menu items by caloric order
             filtered_menu_items = filtered_menu_items.sort_values(by='calories')
-
-            # Group menu items by restaurant
             grouped_menu_items = filtered_menu_items.groupby('restaurant')
             restaurant_outputs = []
 
             for restaurant, items in grouped_menu_items:
-                # Create a Plotly table for each restaurant
                 table = go.Figure(data=[go.Table(
                     header=dict(values=['Item Name', 'Protein (g)', 'Carbs (g)', 'Fats (g)', 'Calories'],
                                 fill_color='#426B69',
@@ -170,63 +191,9 @@ def update_menu_items(selected_restaurants, selected_protein, selected_carbs, se
                                     margin=dict(l=20, r=20, t=30, b=20),
                                     hovermode='closest')
                 restaurant_outputs.append(html.Div(dcc.Graph(figure=table), className='column is-qu'))
-
             return restaurant_outputs
     else:
-        # Prompt the user to make a selection if no criteria are chosen
         return [html.Div(html.P("Please select at least one restaurant and one nutrient/caloric range.", className='has-text-centered'), className='column is-full')]
-
-# Callback to update the histogram based on selected restaurants
-@app.callback(
-    Output('restaurant-histogram', 'figure'),
-    [Input('multiple-restaurant-dropdown', 'value')]
-)
-def update_histogram(selected_restaurants):
-    if selected_restaurants:
-        # Filter data for selected restaurants
-        filtered_data = df[df['restaurant'].isin(selected_restaurants)]
-
-        # Create histogram of calories for selected restaurants
-        fig = go.Figure()
-        for restaurant in selected_restaurants:
-            restaurant_data = filtered_data[filtered_data['restaurant'] == restaurant]
-            fig.add_trace(go.Histogram(x=restaurant_data['calories'], name=restaurant))
-
-        # Update layout
-        fig.update_layout(
-            title=f"Caloric Distribution for all items for {', '.join(selected_restaurants)}",
-            xaxis_title='Calories',
-            yaxis_title='Frequency',
-            barmode='overlay'
-        )
-
-        return fig
-    else:
-        # Return an empty figure if no restaurants selected
-        return go.Figure()
-
-# Callback to update the bubble chart based on selected restaurants
-@app.callback(
-    Output('nutrient-bubble-chart', 'figure'),
-    [Input('multiple-restaurant-dropdown', 'value')]
-)
-def update_bubble_chart(selected_restaurants):
-    if selected_restaurants:
-        # Filter data for selected restaurants
-        filtered_data = df[df['restaurant'].isin(selected_restaurants)]
-
-        # Create bubble chart
-        fig = px.scatter(filtered_data, x='total_fat', y='protein', size='carbohydrates', color='restaurant',
-                         hover_name='item_name', title='Nutrient Composition of Menu Items',
-                         labels={'total_fat': 'Fats (g)', 'protein': 'Protein (g)', 'carbohydrates': 'Carbohydrates (g)'})
-
-        fig.update_layout(xaxis_title='Fats (g)', yaxis_title='Protein (g)',
-                          legend_title='Restaurant', showlegend=True,width=700,height=500)
-
-        return fig
-    else:
-        # Return an empty figure if no restaurants selected
-        return go.Figure()
 
 if __name__ == '__main__':
     app.run_server(debug=False)
