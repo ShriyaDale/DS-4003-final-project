@@ -27,7 +27,7 @@ app.layout = html.Div(children=[
     # Dropdowns for restaurant selection and nutrient ranges
     # Header
     html.Div([
-        html.H1('Foods from American Restaurants Classified through Nutritonal Value', className='title is-1 has-text-centered', style={'color': 'white', 'backgroundColor': '#8BB174', 'padding': '20px'}),
+        html.H1('Foods from American Restaurants Classified through Nutritional Value', className='title is-1 has-text-centered', style={'font': 'Helvetica','color': 'white', 'backgroundColor': '#8BB174', 'padding': '20px'}),
     ], style={'marginBottom': '20px'}),
     html.Div([
         html.Div([
@@ -122,20 +122,16 @@ app.layout = html.Div(children=[
     ], className='columns', style={'marginBottom': '20px'}),
     
     # Main content area
-    html.Div([
-        # Left side: Table of menu items
-        html.Div(id='menu-items-output', className='column is-two-thirds', style={'paddingRight': '20px'}),
+html.Div([
+    # Left side: Table of menu items
+    html.Div(id='menu-items-output', className='column is-two-thirds', style={'paddingRight': '20px'}),
 
-        # Right side: Histogram and Bubble Chart of all restaurant items
-        html.Div([
-            html.Div([
-                dcc.Graph(id='restaurant-histogram'),
-            ], className='column', style={'width': '80%', 'height': '50%'}),
-            html.Div([
-                dcc.Graph(id='nutrient-bubble-chart'),
-            ], className='column', style={'width': '80%', 'height': '50%'})
-        ], className='column'),
-    ], className='columns'),
+    # Right side: Histogram and Bubble Chart of all restaurant items
+    html.Div([
+        dcc.Graph(id='advanced-chart-1', className='column', style={'width': '100%', 'height': '100%'}),
+        dcc.Graph(id='advanced-chart-2', className='column', style={'width': '100%', 'height': '100%'})
+    ], className='column', style={'display': 'flex', 'flexDirection': 'column', 'width': '100%', 'height': '100%'})
+], className='columns'),
 
     html.Div([
         html.Footer([ 
@@ -194,6 +190,79 @@ def update_menu_items(selected_restaurants, selected_protein, selected_carbs, se
             return restaurant_outputs
     else:
         return [html.Div(html.P("Please select at least one restaurant and one nutrient/caloric range.", className='has-text-centered'), className='column is-full')]
+# Callback to update the advanced chart 1
+@app.callback(
+    Output('advanced-chart-1', 'figure'),
+    [Input('multiple-restaurant-dropdown', 'value'),
+     Input('search-input', 'value'),
+     Input('protein-range-slider', 'value'),
+     Input('carbs-range-slider', 'value'),
+     Input('fats-range-slider', 'value'),
+     Input('caloric-range-slider', 'value')]
+)
+def update_advanced_chart_1(restaurants, search_input, protein_range, carbs_range, fats_range, caloric_range):
+    # Filter the dataframe based on inputs
+    filtered_df = df[df['restaurant'].isin(restaurants)]
+    if search_input:
+        filtered_df = filtered_df[filtered_df['food_item'].str.contains(search_input, case=False)]
+    filtered_df = filtered_df[(filtered_df['protein'] >= protein_range[0]) & (filtered_df['protein'] <= protein_range[1])]
+    filtered_df = filtered_df[(filtered_df['carbohydrates'] >= carbs_range[0]) & (filtered_df['carbohydrates'] <= carbs_range[1])]
+    filtered_df = filtered_df[(filtered_df['total_fat'] >= fats_range[0]) & (filtered_df['total_fat'] <= fats_range[1])]
+    filtered_df = filtered_df[(filtered_df['calories'] >= caloric_range[0]) & (filtered_df['calories'] <= caloric_range[1])]
+    
+    # Create advanced chart 1 (replace this with your own advanced chart)
+    fig = px.scatter(filtered_df, x='protein', y='carbohydrates', color='restaurant', title='Advanced Chart 1')
+    fig.update_layout(
+        xaxis_title='Protein (g)',
+        yaxis_title='Carbs (g)',
+        template='plotly_dark'
+    )
+    return fig
+
+# Standard values for comparison
+standard_protein = 50
+standard_carbs = 300
+standard_fat = 65
+
+# Callback to update the advanced chart 2
+@app.callback(
+    Output('advanced-chart-2', 'figure'),
+    [Input('multiple-restaurant-dropdown', 'value'),
+     Input('search-input', 'value'),
+     Input('protein-range-slider', 'value'),
+     Input('carbs-range-slider', 'value'),
+     Input('fats-range-slider', 'value'),
+     Input('caloric-range-slider', 'value')]
+)
+def update_advanced_chart_2(restaurants, search_input, protein_range, carbs_range, fats_range, caloric_range):
+    # Filter the dataframe based on inputs
+    filtered_df = df[df['restaurant'].isin(restaurants)]
+    if search_input:
+        filtered_df = filtered_df[filtered_df['food_item'].str.contains(search_input, case=False)]
+    filtered_df = filtered_df[(filtered_df['protein'] >= protein_range[0]) & (filtered_df['protein'] <= protein_range[1])]
+    filtered_df = filtered_df[(filtered_df['carbohydrates'] >= carbs_range[0]) & (filtered_df['carbohydrates'] <= carbs_range[1])]
+    filtered_df = filtered_df[(filtered_df['total_fat'] >= fats_range[0]) & (filtered_df['total_fat'] <= fats_range[1])]
+    filtered_df = filtered_df[(filtered_df['calories'] >= caloric_range[0]) & (filtered_df['calories'] <= caloric_range[1])]
+    
+    # Calculate average nutrient values
+    avg_protein = filtered_df['protein'].mean()
+    avg_carbs = filtered_df['carbohydrates'].mean()
+    avg_fat = filtered_df['total_fat'].mean()
+    
+    # Create data for the pie chart
+    nutrient_data = {
+        'Nutrient': ['Protein', 'Carbohydrates', 'Total Fat', 'Standard Protein', 'Standard Carbs', 'Standard Fat'],
+        'Value': [avg_protein, avg_carbs, avg_fat, standard_protein, standard_carbs, standard_fat]
+    }
+    
+    # Create pie chart
+    fig = px.pie(nutrient_data, values='Value', names='Nutrient', title='Nutrient Comparison', hole=0.3)
+    fig.update_traces(textposition='outside', textinfo='percent+label')
+    fig.update_layout(
+        template='plotly_dark'
+    )
+    return fig
+
 
 if __name__ == '__main__':
     app.run_server(debug=False)
