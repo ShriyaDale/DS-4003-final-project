@@ -71,7 +71,7 @@ app.layout = html.Div(children=[
                     debounce=True,
                 ),
             ], className='box is-rounded'),
-        ], className='column is-one-quarter'),
+        ], className='column is-one-fifth'),
         html.Div([
             html.Div([
                 html.Label('Select Protein Range (g)', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
@@ -83,7 +83,7 @@ app.layout = html.Div(children=[
                     value=[min_protein, max_protein],
                 ),
             ], className='box is-rounded'),
-        ], className='column is-one-quarter'),
+        ], className='column is-one-fifth'),
         html.Div([
             html.Div([
                 html.Label('Select Carbs Range (g)', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
@@ -95,7 +95,7 @@ app.layout = html.Div(children=[
                     value=[min_carbs, max_carbs],
                 ),
             ], className='box is-rounded'),
-        ], className='column is-one-quarter'),
+        ], className='column is-one-fifth'),
         html.Div([
             html.Div([
                 html.Label('Select Fats Range (g)', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
@@ -107,7 +107,7 @@ app.layout = html.Div(children=[
                     value=[min_fats, max_fats],
                 ),
             ], className='box is-rounded'),
-        ], className='column is-one-quarter'),
+        ], className='column is-one-fifth'),
         html.Div([
             html.Div([
                 html.Label('Select Caloric Range', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
@@ -115,7 +115,7 @@ app.layout = html.Div(children=[
                     id='caloric-range-slider',
                     min=min_calories,
                     max=max_calories,
-                    marks={int(cal): str(cal) for cal in range(int(min_calories), int(max_calories) + 1, 50)},
+                    marks={int(cal): str(cal) for cal in range(int(min_calories), int(max_calories) + 1, 200)},
                     value=[min_calories, max_calories],
                 ),
             ], className='box is-rounded'),
