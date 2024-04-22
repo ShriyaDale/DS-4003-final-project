@@ -245,6 +245,8 @@ def update_pie_chart(restaurants, search_input, protein_range, carbs_range, fats
     fig = px.pie(nutrient_data, values='Value', names='Nutrient', title='Average Nutrient Composition of Selected Restaurant(s)', hole=0.3)
     fig.update_traces(textposition='outside', textinfo='percent+label')
     fig.update_layout(
+        margin=dict(l=20, r=20, t=30, b=20),
+        hovermode='closest'
     )
     return fig
     
