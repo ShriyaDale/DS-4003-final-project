@@ -123,6 +123,7 @@ app.layout = html.Div(children=[
         html.Footer([ 
         html.P([html.Strong('Dataset Provenance')]),
         html.P("The dataset is sourced from MenuStat and serves as a valuable resource for researchers, policymakers, and health professionals interested in restaurant food nutrition. Developed by the New York City Department of Health and Mental Hygiene and now managed by Harvard Pilgrim Health Care Institute, MenuStat aims to provide comprehensive insights into restaurant food nutrition. This dataset holds significant relevance due to the pivotal role that out-of-home dining plays in shaping the American diet. Studies have shown that meals consumed away from home contribute substantially to daily caloric intake, constituting approximately one-third of total calories consumed, and represent nearly half of an average household's food expenditure. My interest lies in delving deep into the diverse spectrum of nutrients present in these restaurant offerings and exploring how they contribute to overall dietary patterns."),
+        html.P(" "),
         html.P('This dashboard was created by Shriya Dale for DS 4003.'),
         html.P(['See the GitHub repository with all work for this project ',html.A('here', 
             href='https://github.com/ShriyaDale/DS-4003_SD/tree/main', className='text-success'),'.'])
