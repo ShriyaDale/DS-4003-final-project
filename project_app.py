@@ -28,29 +28,14 @@ app.layout = html.Div(children=[
     html.Div([
         html.H1('Foods from American Restaurants Classified through Nutritional Value', className='title is-1 has-text-centered', style={'font': 'Helvetica','color': 'white', 'backgroundColor': '#8BB174', 'padding': '20px'}),
     ], style={'marginBottom': '20px'}),
-    #instructions
+    #dashboard background
     html.Div([
         html.Div([
-            html.H3([html.Strong('Instructions')], className='card-title'),
-            html.P('Welcome to the Nutrition Dashboard! Use the selector widgets below to customize your analysis.'),
-            html.P([
-                html.Strong('1. '), 'Choose one or more restaurants from the dropdown menu to filter the data.'
-            ], className='card-text', style={'padding': '5px 0'}),
-            html.P([
-                html.Strong('2. '), 'Use the search bar to find specific food items within the selected restaurants.'
-            ], className='card-text', style={'padding': '5px 0'}),
-            html.P([
-                html.Strong('3. '), 'Adjust the sliders to select the desired range of protein, carbs, fats, and calories.'
-            ], className='card-text', style={'padding': '5px 0'}),
-            html.P([
-                html.Strong('4. '), 'Explore the nutritional information of the filtered items in the table on the left side.'
-            ], className='card-text', style={'padding': '5px 0'}),
-            html.P([
-                html.Strong('5. '), 'FINISH adding directions here.'
-            ], className='card-text', style={'padding': '5px 0'})
+            html.H3([html.Strong('Dashboard Exigence')], className='card-title1'),
+            html.P("This dashboard allows you to explore the nutritional makeup of menu items from various American restaurants. Customize your analysis by filtering items based on your dietary preferences and requirements. The visualizations provide insights into nutrient distribution, aiding in informed decision-making for healthier eating habits. Discover and compare the nutritional value of restaurant offerings to support your dietary goals.", className='card-text', style={'padding': '5px 0'})
         ], className='card border-primary mb-3', style={'text-align':'justify', 'padding': '20px'})
     ], className='container'),
-
+    
     #dropdowns
     html.Div([
         html.Div([
@@ -129,7 +114,7 @@ app.layout = html.Div(children=[
     html.Div([
         dcc.Graph(id='scatter-plot', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%', 'marginBottom': '15px'}),
         dcc.Graph(id='pie-chart', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%'}),
-        html.P('The default values for these are the recommended values for a 2000 calorie diet. When selected, the pie chart shows the average nutrient composition of the selected items from each restaurant.'),
+        html.P('The default values for these are the recommended macronutrient values for a 2000 calorie diet. When selected, the pie chart shows the average macronutrient composition of the selected items from each restaurant.'),
     ], className='column', style={'display': 'flex', 'flexDirection': 'column', 'width': '100%', 'height': '100%', 'overflowX': 'auto','marginRight': '40px'})
 ], className='columns'),
 
@@ -202,7 +187,7 @@ def update_menu_items(selected_restaurants, selected_protein, selected_carbs, se
 def update_scatter_plot(restaurants, search_input, protein_range, carbs_range, fats_range, caloric_range):
     filtered_df = df[df['restaurant'].isin(restaurants)]
     if search_input:
-        filtered_df = filtered_df[filtered_df['food_item'].str.contains(search_input, case=False)]
+        filtered_df = filtered_df[filtered_df['item_name'].str.contains(search_input, case=False)]
     filtered_df = filtered_df[(filtered_df['protein'] >= protein_range[0]) & (filtered_df['protein'] <= protein_range[1])]
     filtered_df = filtered_df[(filtered_df['carbohydrates'] >= carbs_range[0]) & (filtered_df['carbohydrates'] <= carbs_range[1])]
     filtered_df = filtered_df[(filtered_df['total_fat'] >= fats_range[0]) & (filtered_df['total_fat'] <= fats_range[1])]
@@ -231,7 +216,7 @@ standard_fat = 65
 def update_pie_chart(restaurants, search_input, protein_range, carbs_range, fats_range, caloric_range):
     filtered_df = df[df['restaurant'].isin(restaurants)]
     if search_input:
-        filtered_df = filtered_df[filtered_df['food_item'].str.contains(search_input, case=False)]
+        filtered_df = filtered_df[filtered_df['item_name'].str.contains(search_input, case=False)]
     filtered_df = filtered_df[(filtered_df['protein'] >= protein_range[0]) & (filtered_df['protein'] <= protein_range[1])]
     filtered_df = filtered_df[(filtered_df['carbohydrates'] >= carbs_range[0]) & (filtered_df['carbohydrates'] <= carbs_range[1])]
     filtered_df = filtered_df[(filtered_df['total_fat'] >= fats_range[0]) & (filtered_df['total_fat'] <= fats_range[1])]
@@ -243,7 +228,7 @@ def update_pie_chart(restaurants, search_input, protein_range, carbs_range, fats
         'Nutrient': ['Protein', 'Carbohydrates', 'Total Fat', 'Standard Protein', 'Standard Carbs', 'Standard Fat'],
         'Value': [avg_protein, avg_carbs, avg_fat, standard_protein, standard_carbs, standard_fat]
     }
-    fig = px.pie(nutrient_data, values='Value', names='Nutrient', title='Nutritional Composition for Selected Restaurants', hole=0.3)
+    fig = px.pie(nutrient_data, values='Value', names='Nutrient', title='Marco Composition for Selected Restaurants', hole=0.3)
     fig.update_traces(textposition='outside', textinfo='percent+label')
     fig.update_layout(
         hovermode='closest'
