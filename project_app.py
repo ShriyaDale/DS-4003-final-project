@@ -3,13 +3,13 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 
-# Load the dataset
+#load the dataset
 df = pd.read_csv('data.csv')
 
-# Initialize the Dash app
+#initialize the Dash app w/ server
 app = Dash(__name__, external_stylesheets=['https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css'])
 server = app.server
-# Define the minimum and maximum values for the nutrient range sliders
+#define the minimum and maximum values for the nutrient range sliders/constant values for future callbacks
 min_protein = df['protein'].min()
 max_protein = df['protein'].max()
 min_carbs = df['carbohydrates'].min()
@@ -22,13 +22,13 @@ ideal_protein_intake = 50
 ideal_carbs_intake = 300
 ideal_fats_intake = 65
 
-# Define the layout of the app
+#layout w/ components
 app.layout = html.Div(children=[
-    # Dropdowns for restaurant selection and nutrient ranges
-    # Header
+    #header
     html.Div([
         html.H1('Foods from American Restaurants Classified through Nutritional Value', className='title is-1 has-text-centered', style={'font': 'Helvetica','color': 'white', 'backgroundColor': '#8BB174', 'padding': '20px'}),
     ], style={'marginBottom': '20px'}),
+    #instructions
     html.Div([
         html.Div([
             html.H3([html.Strong('Instructions')], className='card-title'),
@@ -50,6 +50,7 @@ app.layout = html.Div(children=[
             ], className='card-text', style={'padding': '5px 0'})
         ], className='card border-primary mb-3', style={'text-align':'justify', 'padding': '20px'})
     ], className='container'),
+    #dropdowns
     html.Div([
         html.Div([
             html.Div([
@@ -121,15 +122,13 @@ app.layout = html.Div(children=[
         ], className='column is-one-quarter'),
     ], className='columns', style={'marginBottom': '20px'}),
     
-    # Main content area
-html.Div([
-    # Left side: Table of menu items
-    html.Div(id='menu-items-output', className='column is-two-thirds', style={'paddingRight': '20px'}),
-
-    # Right side: Histogram and Bubble Chart of all restaurant items
+    #visualizations
     html.Div([
-        dcc.Graph(id='advanced-chart-1', className='column', style={'width': '100%', 'height': '100%'}),
-        dcc.Graph(id='advanced-chart-2', className='column', style={'width': '100%', 'height': '100%'})
+    html.Div(id='menu-items-output', className='column is-two-thirds', style={'paddingRight': '20px'}),
+    html.Div([
+        dcc.Graph(id='scatter-plot', className='column', style={'width': '100%', 'height': '100%'}),
+        dcc.Graph(id='pie-chart', className='column', style={'width': '100%', 'height': '100%'}),
+        html.P('The default values for these are the recommended values for a 2000 calorie diet. When selected, the pie chart shows the average nutrient composition of the selected items.'),
     ], className='column', style={'display': 'flex', 'flexDirection': 'column', 'width': '100%', 'height': '100%'})
 ], className='columns'),
 
@@ -154,7 +153,6 @@ html.Div([
 )
 def update_menu_items(selected_restaurants, selected_protein, selected_carbs, selected_fats, selected_calories, search_value):
     if selected_restaurants and selected_protein and selected_carbs and selected_fats and selected_calories:
-        # Filter the menu items based on selected criteria
         filtered_menu_items = df[(df['restaurant'].isin(selected_restaurants)) &
                                  (df['protein'] >= selected_protein[0]) & (df['protein'] <= selected_protein[1]) &
                                  (df['carbohydrates'] >= selected_carbs[0]) & (df['carbohydrates'] <= selected_carbs[1]) &
@@ -190,9 +188,9 @@ def update_menu_items(selected_restaurants, selected_protein, selected_carbs, se
             return restaurant_outputs
     else:
         return [html.Div(html.P("Please select at least one restaurant and one nutrient/caloric range.", className='has-text-centered'), className='column is-full')]
-# Callback to update the advanced chart 1
+#callback to update the scatter plot
 @app.callback(
-    Output('advanced-chart-1', 'figure'),
+    Output('scatter-plot', 'figure'),
     [Input('multiple-restaurant-dropdown', 'value'),
      Input('search-input', 'value'),
      Input('protein-range-slider', 'value'),
@@ -200,8 +198,7 @@ def update_menu_items(selected_restaurants, selected_protein, selected_carbs, se
      Input('fats-range-slider', 'value'),
      Input('caloric-range-slider', 'value')]
 )
-def update_advanced_chart_1(restaurants, search_input, protein_range, carbs_range, fats_range, caloric_range):
-    # Filter the dataframe based on inputs
+def update_scatter_plot(restaurants, search_input, protein_range, carbs_range, fats_range, caloric_range):
     filtered_df = df[df['restaurant'].isin(restaurants)]
     if search_input:
         filtered_df = filtered_df[filtered_df['food_item'].str.contains(search_input, case=False)]
@@ -209,13 +206,10 @@ def update_advanced_chart_1(restaurants, search_input, protein_range, carbs_rang
     filtered_df = filtered_df[(filtered_df['carbohydrates'] >= carbs_range[0]) & (filtered_df['carbohydrates'] <= carbs_range[1])]
     filtered_df = filtered_df[(filtered_df['total_fat'] >= fats_range[0]) & (filtered_df['total_fat'] <= fats_range[1])]
     filtered_df = filtered_df[(filtered_df['calories'] >= caloric_range[0]) & (filtered_df['calories'] <= caloric_range[1])]
-    
-    # Create advanced chart 1 (replace this with your own advanced chart)
-    fig = px.scatter(filtered_df, x='protein', y='carbohydrates', color='restaurant', title='Advanced Chart 1')
+    fig = px.scatter(filtered_df, x='protein', y='carbohydrates', color='calories', title = 'Protein vs. Carbs')
     fig.update_layout(
         xaxis_title='Protein (g)',
         yaxis_title='Carbs (g)',
-        template='plotly_dark'
     )
     return fig
 
@@ -224,9 +218,8 @@ standard_protein = 50
 standard_carbs = 300
 standard_fat = 65
 
-# Callback to update the advanced chart 2
 @app.callback(
-    Output('advanced-chart-2', 'figure'),
+    Output('pie-chart', 'figure'),
     [Input('multiple-restaurant-dropdown', 'value'),
      Input('search-input', 'value'),
      Input('protein-range-slider', 'value'),
@@ -234,8 +227,7 @@ standard_fat = 65
      Input('fats-range-slider', 'value'),
      Input('caloric-range-slider', 'value')]
 )
-def update_advanced_chart_2(restaurants, search_input, protein_range, carbs_range, fats_range, caloric_range):
-    # Filter the dataframe based on inputs
+def update_pie_chart(restaurants, search_input, protein_range, carbs_range, fats_range, caloric_range):
     filtered_df = df[df['restaurant'].isin(restaurants)]
     if search_input:
         filtered_df = filtered_df[filtered_df['food_item'].str.contains(search_input, case=False)]
@@ -243,26 +235,18 @@ def update_advanced_chart_2(restaurants, search_input, protein_range, carbs_rang
     filtered_df = filtered_df[(filtered_df['carbohydrates'] >= carbs_range[0]) & (filtered_df['carbohydrates'] <= carbs_range[1])]
     filtered_df = filtered_df[(filtered_df['total_fat'] >= fats_range[0]) & (filtered_df['total_fat'] <= fats_range[1])]
     filtered_df = filtered_df[(filtered_df['calories'] >= caloric_range[0]) & (filtered_df['calories'] <= caloric_range[1])]
-    
-    # Calculate average nutrient values
     avg_protein = filtered_df['protein'].mean()
     avg_carbs = filtered_df['carbohydrates'].mean()
     avg_fat = filtered_df['total_fat'].mean()
-    
-    # Create data for the pie chart
     nutrient_data = {
         'Nutrient': ['Protein', 'Carbohydrates', 'Total Fat', 'Standard Protein', 'Standard Carbs', 'Standard Fat'],
         'Value': [avg_protein, avg_carbs, avg_fat, standard_protein, standard_carbs, standard_fat]
     }
-    
-    # Create pie chart
-    fig = px.pie(nutrient_data, values='Value', names='Nutrient', title='Nutrient Comparison', hole=0.3)
+    fig = px.pie(nutrient_data, values='Value', names='Nutrient', title='Average Nutrient Composition of Selected Restaurant(s)', hole=0.3)
     fig.update_traces(textposition='outside', textinfo='percent+label')
     fig.update_layout(
-        template='plotly_dark'
     )
     return fig
-
-
+    
 if __name__ == '__main__':
     app.run_server(debug=False)
