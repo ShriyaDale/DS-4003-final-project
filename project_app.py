@@ -8,7 +8,7 @@ df = pd.read_csv('data.csv')
 
 # Initialize the Dash app
 app = Dash(__name__, external_stylesheets=['https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css'])
-
+server = app.server
 # Define the minimum and maximum values for the nutrient range sliders
 min_protein = df['protein'].min()
 max_protein = df['protein'].max()
