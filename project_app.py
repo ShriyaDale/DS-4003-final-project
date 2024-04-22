@@ -31,7 +31,7 @@ app.layout = html.Div(children=[
     #dashboard background
     html.Div([
         html.Div([
-            html.H3([html.Strong('Dashboard Exigence')], className='card-title1'),
+            html.H3([html.Strong('Dashboard Introduction')], className='card-title1'),
             html.P("This dashboard allows you to explore the nutritional makeup of menu items from various American restaurants. Customize your analysis by filtering items based on your dietary preferences and requirements. The visualizations provide insights into nutrient distribution, aiding in informed decision-making for healthier eating habits. Discover and compare the nutritional value of restaurant offerings to support your dietary goals.", className='card-text', style={'padding': '5px 0'})
         ], className='card border-primary mb-3', style={'text-align':'justify', 'padding': '20px'})
     ], className='container'),
@@ -110,7 +110,7 @@ app.layout = html.Div(children=[
     
     #visualizations
     html.Div([
-    html.Div(id='menu-items-output', className='column is-two-thirds', style={'paddingRight': '20px'}),
+    html.Div(id='menu-items-output', className='column is-one-half', style={'paddingRight': '20px'}),
     html.Div([
         dcc.Graph(id='scatter-plot', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%', 'marginBottom': '15px'}),
         dcc.Graph(id='pie-chart', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%'}),
