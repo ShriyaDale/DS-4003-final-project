@@ -1,5 +1,15 @@
 # DS 4003 final project
-Shriya Dale - DS 4003; a dashboard built using Dash, Plotly, HTML, and Python components
+Shriya Dale - DS 4003, Spring 2024
+Final Project: A nutrional dashboard built using Dash, Plotly, HTML, and Python components
 
+For this project, I explored a dataset which compiled a list of all of the restaurant items in most of America's fast food/restaurant chains, containing valuable information, such as the carbohydrates, protein, caloric, and fat content in each item. The dataset is publicly avaiable on MenuStat using this link: https://www.menustat.org/.
 
-#V0 Layout Render URL: https://ds-4003-sd.onrender.com/
+The live dashboard can be found on this link: https://ds-4003-sd.onrender.com/ (note that it may spin down with inactivity).
+# Building Process: 
+This project followed a structured approach, divided into a series of sprints to develop this dashboard. In the first sprint, I conceptualized the dashboard idea and created user profiles to understand the target audience better. The subsequent sprint involved sourcing and cleaning the necessary data to populate the dashboard. With data in hand, I proceeded to design a preliminary layout of the dashboard in the third sprint, outlining its structure and key components. The fourth sprint saw the creation of a rough draft of the fully functioning dashboard, with limited design and user interface features. This phase allowed me to focus on getting the core functionality in place before refining the aesthetics and user experience in the final sprint. During this phase, I iteratively enhanced the UI/UX features to improve usability and incorporated additional styling to create a cohesive visual identity for the dashboard. Throughout the development process, I found it beneficial to utilize a Jupyter Notebook to draft individual components and visualize the desired graphs before integrating them into the larger app file. This iterative approach enabled me to gradually build and refine each element, ensuring they functioned as intended before combining them into the final dashboard. All of the sprints mentioned here are in the sprints folder in the repository. The Jupyter notebook isn't in the repository as everything is now integrated into the project_app.py file.
+
+# Data Science Concepts
+Throughout this project, I honed my data handling skills, leveraging Pandas for data loading, manipulation, and cleaning. This involved applying filters, melting data, and conducting rudimentary statistical analyses to extract insights. Additionally, dashboard development was done using Dash by structuring layouts, and integrating interactive elements such as dropdowns, sliders, and input fields (search bar). Using Plotly Express and Plotly Graph Objects, I explored visualization techniques, creating scatter plots, pie charts, and tables to convey the data based on what the user inputted. My focus on user experience (UX) design led me to prioritize simplicity, clarity, and relevance in interface design, organizing components logically and minimizing clutter. Embracing iterative development methodologies, I iteratively refined the dashboard, soliciting feedback to enhance its design, layout, and functionality continually. Lastly, I recognized the importance of meticulous documentation and collaborative practices, ensuring clear code documentation and sharing project iterations on platforms like GitHub for effective collaboration and version control.
+
+# Learning Experiences
+
