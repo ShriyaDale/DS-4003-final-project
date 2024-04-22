@@ -9,6 +9,7 @@ df = pd.read_csv('data.csv')
 #initialize the Dash app w/ server
 app = Dash(__name__, external_stylesheets=['https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css'])
 server = app.server
+
 #define the minimum and maximum values for the nutrient range sliders/constant values for future callbacks
 min_protein = df['protein'].min()
 max_protein = df['protein'].max()
@@ -18,28 +19,28 @@ min_fats = df['total_fat'].min()
 max_fats = df['total_fat'].max()
 min_calories = df['calories'].min()
 max_calories = df['calories'].max()
+#standard values for the pie chart (shown below)
 ideal_protein_intake = 50
 ideal_carbs_intake = 300
 ideal_fats_intake = 65
 
-#layout w/ components
+#layout with components
 app.layout = html.Div(children=[
     #header
     html.Div([
         html.H1('Foods from American Restaurants Classified through Nutritional Value', className='title is-1 has-text-centered', style={'font': 'Helvetica','color': 'white', 'backgroundColor': '#8BB174', 'padding': '20px'}),
     ], style={'marginBottom': '20px'}),
-    #dashboard background
+    #dashboard introduction
     html.Div([
         html.Div([
             html.H3([html.Strong('Dashboard Introduction')], className='card-title1'),
             html.P("This dashboard allows you to explore the nutritional makeup of menu items from various American restaurants. Customize your analysis by filtering items based on your dietary preferences and requirements. The visualizations provide insights into nutrient distribution, aiding in informed decision-making for healthier eating habits. Discover and compare the nutritional value of restaurant offerings to support your dietary goals.", className='card-text', style={'padding': '5px 0'})
         ], className='card border-primary mb-3', style={'text-align':'justify', 'padding': '20px'})
     ], className='container'),
-    
     #dropdowns
     html.Div([
         html.Div([
-            html.Div([
+            html.Div([ #restaurant dropdown (multi-select)
                 html.Label('Select Restaurants', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
                 dcc.Dropdown(
                     id='multiple-restaurant-dropdown',
@@ -48,7 +49,7 @@ app.layout = html.Div(children=[
                     value=[],
                 ),
             ], className='box is-rounded'),
-            html.Div([
+            html.Div([ #search box - takes in USER input
                 html.Label('Search', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
                 dcc.Input(
                     id='search-input',
@@ -59,7 +60,7 @@ app.layout = html.Div(children=[
             ], className='box is-rounded'),
         ], className='column is-one-fifth'),
         html.Div([
-            html.Div([
+            html.Div([ #protein slider
                 html.Label('Select Protein Range (g)', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
                 dcc.RangeSlider(
                     id='protein-range-slider',
@@ -71,7 +72,7 @@ app.layout = html.Div(children=[
             ], className='box is-rounded'),
         ], className='column is-one-fifth'),
         html.Div([
-            html.Div([
+            html.Div([ #carbs slider
                 html.Label('Select Carbs Range (g)', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
                 dcc.RangeSlider(
                     id='carbs-range-slider',
@@ -83,7 +84,7 @@ app.layout = html.Div(children=[
             ], className='box is-rounded'),
         ], className='column is-one-fifth'),
         html.Div([
-            html.Div([
+            html.Div([ #fats range slider
                 html.Label('Select Fats Range (g)', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
                 dcc.RangeSlider(
                     id='fats-range-slider',
@@ -95,7 +96,7 @@ app.layout = html.Div(children=[
             ], className='box is-rounded'),
         ], className='column is-one-fifth'),
         html.Div([
-            html.Div([
+            html.Div([ #caloric range slider
                 html.Label('Select Caloric Range', className='label has-text-white has-background-dark is-rounded has-text-centered', style={'fontWeight': 'bold', 'padding': '10px'}),
                 dcc.RangeSlider(
                     id='caloric-range-slider',
@@ -105,29 +106,31 @@ app.layout = html.Div(children=[
                     value=[min_calories, max_calories],
                 ),
             ], className='box is-rounded'),
-        ], className='column is-one-fifth'),
+        ], className='column is-one-fifth'), #used to make sure the columns are split evenly regardless of device
     ], className='columns', style={'marginBottom': '20px', 'margin': '20px'}),
     
     #visualizations
     html.Div([
-    html.Div(id='menu-items-output', className='column is-one-half', style={'paddingRight': '20px'}),
-    html.Div([
+    html.Div(id='menu-items-output', className='column is-one-half', style={'paddingRight': '20px'}), #table layout
+    html.Div([ #graphs layout
         dcc.Graph(id='scatter-plot', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%', 'marginBottom': '15px'}),
         dcc.Graph(id='pie-chart', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%'}),
         html.P('The default values for these are the recommended macronutrient values for a 2000 calorie diet. When selected, the pie chart shows the average macronutrient composition of the selected items from each restaurant.'),
     ], className='column', style={'display': 'flex', 'flexDirection': 'column', 'width': '100%', 'height': '100%', 'overflowX': 'auto','marginRight': '40px'})
 ], className='columns'),
-
+    #dashboard footer with link to github + project background
     html.Div([
         html.Footer([ 
         html.P('This dashboard was created by Shriya Dale for DS 4003.'),
+        html.P([html.Strong('Dataset Provenance')]),
+        html.P("The dataset is sourced from MenuStat and serves as a valuable resource for researchers, policymakers, and health professionals interested in restaurant food nutrition. Developed by the New York City Department of Health and Mental Hygiene and now managed by Harvard Pilgrim Health Care Institute, MenuStat aims to provide comprehensive insights into restaurant food nutrition. This dataset holds significant relevance due to the pivotal role that out-of-home dining plays in shaping the American diet. Studies have shown that meals consumed away from home contribute substantially to daily caloric intake, constituting approximately one-third of total calories consumed, and represent nearly half of an average household's food expenditure. My interest lies in delving deep into the diverse spectrum of nutrients present in these restaurant offerings and exploring how they contribute to overall dietary patterns."),
         html.P(['See the GitHub repository with all work for this project ',html.A('here', 
             href='https://github.com/ShriyaDale/DS-4003_SD/tree/main', className='text-success'),'.'])
             ], className='row text-light bg-dark p-4', style={'text-align':'center', 'backgroundColor': '#8BB174'})
         ], className='container-fluid')
     ], style={'backgroundColor': '#C1E1C1'}
 )
-#callbacks for menu tables
+#callback for menu tables
 @app.callback(
     Output('menu-items-output', 'children'),
     [Input('multiple-restaurant-dropdown', 'value'),
@@ -174,6 +177,7 @@ def update_menu_items(selected_restaurants, selected_protein, selected_carbs, se
             return restaurant_outputs
     else:
         return [html.Div(html.P("Please select at least one restaurant and one nutrient/caloric range.", className='has-text-centered'), className='column is-full')]
+
 #callback to update the scatter plot
 @app.callback(
     Output('scatter-plot', 'figure'),
@@ -198,12 +202,8 @@ def update_scatter_plot(restaurants, search_input, protein_range, carbs_range, f
         yaxis_title='Carbs (g)',
     )
     return fig
-
-# Standard values for comparison
-standard_protein = 50
-standard_carbs = 300
-standard_fat = 65
-
+    
+#callback to update the pie chart
 @app.callback(
     Output('pie-chart', 'figure'),
     [Input('multiple-restaurant-dropdown', 'value'),
