@@ -114,6 +114,7 @@ app.layout = html.Div(children=[
     html.Div(id='menu-items-output', className='column is-one-half', style={'paddingRight': '20px'}), #table layout
     html.Div([ #graphs layout
         dcc.Graph(id='scatter-plot', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%', 'marginBottom': '15px'}),
+        html.P('This scatter plot shows the protein and carbohydrate content of the selected items from each restaurant. The color of the points represents the caloric content of the items.'),
         dcc.Graph(id='pie-chart', className='col-lg-6 col-md-6 col-sm-12', style={'width': '100%', 'height': '100%'}),
         html.P('The default values for these are the recommended macronutrient values for a 2000 calorie diet. When selected, the pie chart shows the average macronutrient composition of the selected items from each restaurant.'),
     ], className='column', style={'display': 'flex', 'flexDirection': 'column', 'width': '100%', 'height': '100%', 'overflowX': 'auto','marginRight': '40px'})
